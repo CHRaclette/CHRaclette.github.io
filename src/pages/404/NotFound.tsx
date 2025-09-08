@@ -10,7 +10,7 @@ export default function NotFound() {
                 <p className="text-lg">The page you are looking for does not exist or has moved.</p>
                 <div className={'mt-2 flex flex-col items-center justify-center gap-2'}>
                     <Button size="lg" asChild>
-                        <Link to="/" className="mt-4">
+                        <Link to="/Wordle" className="mt-4">
                             Back Home
                             <HomeIcon />
                         </Link>

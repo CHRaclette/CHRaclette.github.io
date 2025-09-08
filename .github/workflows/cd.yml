@@ -29,6 +29,11 @@ jobs:
             - name: Build project
               run: npm run build --if-present
 
+            - name: Fix hard coded linking to relative paths
+              run: |
+                  sed -i 's/\/assets/\.\/assets/g' ./dist/index.html
+                  sed -i 's/\/Wordle\/assets/\.\/assets/g' ./dist/index.html
+
             - name: Deploy to GitHub Pages
               uses: peaceiris/actions-gh-pages@v3
               with:

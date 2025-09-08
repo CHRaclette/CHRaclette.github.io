@@ -11,7 +11,7 @@ export default function App() {
                 <BrowserRouter>
                     <Routes>
                         {/* Main */}
-                        <Route path="/" element={<Main />} />
+                        <Route path="/Wordle" element={<Main />} />
 
                         {/* 404 */}
                         <Route path="*" element={<NotFound />} />
