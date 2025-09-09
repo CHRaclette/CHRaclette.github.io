@@ -1,12 +1,14 @@
 import { Separator } from '@/components/ui/separator';
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
-import { LucideMenu, Home, ArrowRight, LucideChevronsLeft, LucideChevronsRight, ArrowLeft } from 'lucide-react';
+import { LucideMenu, Home, ArrowRight, LucideChevronsLeft, LucideChevronsRight, ArrowLeft, Github, LucidePalette } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import ModeToggle from '@/components/ui/mode-toggle';
 import { Calendar } from '@/components/ui/calendar';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { toast } from 'sonner';
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
 
 export default function Main() {
     const hash = window.location.hash.replace('#', '');
@@ -43,14 +45,619 @@ export function Header() {
         }
     };
 
+    interface ColorThemes {
+        [key: string]: {
+            light: { [key: string]: string };
+            dark: { [key: string]: string };
+        };
+    }
+
+    const colorThemes: ColorThemes = {
+        black: {
+            light: {
+                '--radius': '0.65rem',
+                '--background': 'oklch(1 0 0)',
+                '--foreground': 'oklch(0.145 0 0)',
+                '--card': 'oklch(1 0 0)',
+                '--card-foreground': 'oklch(0.145 0 0)',
+                '--popover': 'oklch(1 0 0)',
+                '--popover-foreground': 'oklch(0.145 0 0)',
+                '--primary': 'oklch(0.205 0 0)',
+                '--primary-foreground': 'oklch(0.985 0 0)',
+                '--secondary': 'oklch(0.97 0 0)',
+                '--secondary-foreground': 'oklch(0.205 0 0)',
+                '--muted': 'oklch(0.97 0 0)',
+                '--muted-foreground': 'oklch(0.556 0 0)',
+                '--accent': 'oklch(0.97 0 0)',
+                '--accent-foreground': 'oklch(0.205 0 0)',
+                '--destructive': 'oklch(0.577 0.245 27.325)',
+                '--border': 'oklch(0.922 0 0)',
+                '--input': 'oklch(0.922 0 0)',
+                '--ring': 'oklch(0.708 0 0)',
+                '--chart-1': 'oklch(0.646 0.222 41.116)',
+                '--chart-2': 'oklch(0.6 0.118 184.704)',
+                '--chart-3': 'oklch(0.398 0.07 227.392)',
+                '--chart-4': 'oklch(0.828 0.189 84.429)',
+                '--chart-5': 'oklch(0.769 0.188 70.08)',
+                '--sidebar': 'oklch(0.985 0 0)',
+                '--sidebar-foreground': 'oklch(0.145 0 0)',
+                '--sidebar-primary': 'oklch(0.205 0 0)',
+                '--sidebar-primary-foreground': 'oklch(0.985 0 0)',
+                '--sidebar-accent': 'oklch(0.97 0 0)',
+                '--sidebar-accent-foreground': 'oklch(0.205 0 0)',
+                '--sidebar-border': 'oklch(0.922 0 0)',
+                '--sidebar-ring': 'oklch(0.708 0 0)',
+            },
+            dark: {
+                '--background': 'oklch(0.145 0 0)',
+                '--foreground': 'oklch(0.985 0 0)',
+                '--card': 'oklch(0.205 0 0)',
+                '--card-foreground': 'oklch(0.985 0 0)',
+                '--popover': 'oklch(0.205 0 0)',
+                '--popover-foreground': 'oklch(0.985 0 0)',
+                '--primary': 'oklch(0.922 0 0)',
+                '--primary-foreground': 'oklch(0.205 0 0)',
+                '--secondary': 'oklch(0.269 0 0)',
+                '--secondary-foreground': 'oklch(0.985 0 0)',
+                '--muted': 'oklch(0.269 0 0)',
+                '--muted-foreground': 'oklch(0.708 0 0)',
+                '--accent': 'oklch(0.269 0 0)',
+                '--accent-foreground': 'oklch(0.985 0 0)',
+                '--destructive': 'oklch(0.704 0.191 22.216)',
+                '--border': 'oklch(1 0 0 / 10%)',
+                '--input': 'oklch(1 0 0 / 15%)',
+                '--ring': 'oklch(0.556 0 0)',
+                '--chart-1': 'oklch(0.488 0.243 264.376)',
+                '--chart-2': 'oklch(0.696 0.17 162.48)',
+                '--chart-3': 'oklch(0.769 0.188 70.08)',
+                '--chart-4': 'oklch(0.627 0.265 303.9)',
+                '--chart-5': 'oklch(0.645 0.246 16.439)',
+                '--sidebar': 'oklch(0.205 0 0)',
+                '--sidebar-foreground': 'oklch(0.985 0 0)',
+                '--sidebar-primary': 'oklch(0.488 0.243 264.376)',
+                '--sidebar-primary-foreground': 'oklch(0.985 0 0)',
+                '--sidebar-accent': 'oklch(0.269 0 0)',
+                '--sidebar-accent-foreground': 'oklch(0.985 0 0)',
+                '--sidebar-border': 'oklch(1 0 0 / 10%)',
+                '--sidebar-ring': 'oklch(0.556 0 0)',
+            },
+        },
+        red: {
+            light: {
+                '--radius': '0.65rem',
+                '--background': 'oklch(1 0 0)',
+                '--foreground': 'oklch(0.141 0.005 285.823)',
+                '--card': 'oklch(1 0 0)',
+                '--card-foreground': 'oklch(0.141 0.005 285.823)',
+                '--popover': 'oklch(1 0 0)',
+                '--popover-foreground': 'oklch(0.141 0.005 285.823)',
+                '--primary': 'oklch(0.637 0.237 25.331)',
+                '--primary-foreground': 'oklch(0.971 0.013 17.38)',
+                '--secondary': 'oklch(0.967 0.001 286.375)',
+                '--secondary-foreground': 'oklch(0.21 0.006 285.885)',
+                '--muted': 'oklch(0.967 0.001 286.375)',
+                '--muted-foreground': 'oklch(0.552 0.016 285.938)',
+                '--accent': 'oklch(0.967 0.001 286.375)',
+                '--accent-foreground': 'oklch(0.21 0.006 285.885)',
+                '--destructive': 'oklch(0.577 0.245 27.325)',
+                '--border': 'oklch(0.92 0.004 286.32)',
+                '--input': 'oklch(0.92 0.004 286.32)',
+                '--ring': 'oklch(0.637 0.237 25.331)',
+                '--chart-1': 'oklch(0.646 0.222 41.116)',
+                '--chart-2': 'oklch(0.6 0.118 184.704)',
+                '--chart-3': 'oklch(0.398 0.07 227.392)',
+                '--chart-4': 'oklch(0.828 0.189 84.429)',
+                '--chart-5': 'oklch(0.769 0.188 70.08)',
+                '--sidebar': 'oklch(0.985 0 0)',
+                '--sidebar-foreground': 'oklch(0.141 0.005 285.823)',
+                '--sidebar-primary': 'oklch(0.637 0.237 25.331)',
+                '--sidebar-primary-foreground': 'oklch(0.971 0.013 17.38)',
+                '--sidebar-accent': 'oklch(0.967 0.001 286.375)',
+                '--sidebar-accent-foreground': 'oklch(0.21 0.006 285.885)',
+                '--sidebar-border': 'oklch(0.92 0.004 286.32)',
+                '--sidebar-ring': 'oklch(0.637 0.237 25.331)',
+            },
+            dark: {
+                '--background': 'oklch(0.141 0.005 285.823)',
+                '--foreground': 'oklch(0.985 0 0)',
+                '--card': 'oklch(0.21 0.006 285.885)',
+                '--card-foreground': 'oklch(0.985 0 0)',
+                '--popover': 'oklch(0.21 0.006 285.885)',
+                '--popover-foreground': 'oklch(0.985 0 0)',
+                '--primary': 'oklch(0.637 0.237 25.331)',
+                '--primary-foreground': 'oklch(0.971 0.013 17.38)',
+                '--secondary': 'oklch(0.274 0.006 286.033)',
+                '--secondary-foreground': 'oklch(0.985 0 0)',
+                '--muted': 'oklch(0.274 0.006 286.033)',
+                '--muted-foreground': 'oklch(0.705 0.015 286.067)',
+                '--accent': 'oklch(0.274 0.006 286.033)',
+                '--accent-foreground': 'oklch(0.985 0 0)',
+                '--destructive': 'oklch(0.704 0.191 22.216)',
+                '--border': 'oklch(1 0 0 / 10%)',
+                '--input': 'oklch(1 0 0 / 15%)',
+                '--ring': 'oklch(0.637 0.237 25.331)',
+                '--chart-1': 'oklch(0.488 0.243 264.376)',
+                '--chart-2': 'oklch(0.696 0.17 162.48)',
+                '--chart-3': 'oklch(0.769 0.188 70.08)',
+                '--chart-4': 'oklch(0.627 0.265 303.9)',
+                '--chart-5': 'oklch(0.645 0.246 16.439)',
+                '--sidebar': 'oklch(0.21 0.006 285.885)',
+                '--sidebar-foreground': 'oklch(0.985 0 0)',
+                '--sidebar-primary': 'oklch(0.637 0.237 25.331)',
+                '--sidebar-primary-foreground': 'oklch(0.971 0.013 17.38)',
+                '--sidebar-accent': 'oklch(0.274 0.006 286.033)',
+                '--sidebar-accent-foreground': 'oklch(0.985 0 0)',
+                '--sidebar-border': 'oklch(1 0 0 / 10%)',
+                '--sidebar-ring': 'oklch(0.637 0.237 25.331)',
+            },
+        },
+        rose: {
+            light: {
+                '--radius': '0.65rem',
+                '--background': 'oklch(1 0 0)',
+                '--foreground': 'oklch(0.141 0.005 285.823)',
+                '--card': 'oklch(1 0 0)',
+                '--card-foreground': 'oklch(0.141 0.005 285.823)',
+                '--popover': 'oklch(1 0 0)',
+                '--popover-foreground': 'oklch(0.141 0.005 285.823)',
+                '--primary': 'oklch(0.645 0.246 16.439)',
+                '--primary-foreground': 'oklch(0.969 0.015 12.422)',
+                '--secondary': 'oklch(0.967 0.001 286.375)',
+                '--secondary-foreground': 'oklch(0.21 0.006 285.885)',
+                '--muted': 'oklch(0.967 0.001 286.375)',
+                '--muted-foreground': 'oklch(0.552 0.016 285.938)',
+                '--accent': 'oklch(0.967 0.001 286.375)',
+                '--accent-foreground': 'oklch(0.21 0.006 285.885)',
+                '--destructive': 'oklch(0.577 0.245 27.325)',
+                '--border': 'oklch(0.92 0.004 286.32)',
+                '--input': 'oklch(0.92 0.004 286.32)',
+                '--ring': 'oklch(0.645 0.246 16.439)',
+                '--chart-1': 'oklch(0.646 0.222 41.116)',
+                '--chart-2': 'oklch(0.6 0.118 184.704)',
+                '--chart-3': 'oklch(0.398 0.07 227.392)',
+                '--chart-4': 'oklch(0.828 0.189 84.429)',
+                '--chart-5': 'oklch(0.769 0.188 70.08)',
+                '--sidebar': 'oklch(0.985 0 0)',
+                '--sidebar-foreground': 'oklch(0.141 0.005 285.823)',
+                '--sidebar-primary': 'oklch(0.645 0.246 16.439)',
+                '--sidebar-primary-foreground': 'oklch(0.969 0.015 12.422)',
+                '--sidebar-accent': 'oklch(0.967 0.001 286.375)',
+                '--sidebar-accent-foreground': 'oklch(0.21 0.006 285.885)',
+                '--sidebar-border': 'oklch(0.92 0.004 286.32)',
+                '--sidebar-ring': 'oklch(0.645 0.246 16.439)',
+            },
+            dark: {
+                '--background': 'oklch(0.141 0.005 285.823)',
+                '--foreground': 'oklch(0.985 0 0)',
+                '--card': 'oklch(0.21 0.006 285.885)',
+                '--card-foreground': 'oklch(0.985 0 0)',
+                '--popover': 'oklch(0.21 0.006 285.885)',
+                '--popover-foreground': 'oklch(0.985 0 0)',
+                '--primary': 'oklch(0.645 0.246 16.439)',
+                '--primary-foreground': 'oklch(0.969 0.015 12.422)',
+                '--secondary': 'oklch(0.274 0.006 286.033)',
+                '--secondary-foreground': 'oklch(0.985 0 0)',
+                '--muted': 'oklch(0.274 0.006 286.033)',
+                '--muted-foreground': 'oklch(0.705 0.015 286.067)',
+                '--accent': 'oklch(0.274 0.006 286.033)',
+                '--accent-foreground': 'oklch(0.985 0 0)',
+                '--destructive': 'oklch(0.704 0.191 22.216)',
+                '--border': 'oklch(1 0 0 / 10%)',
+                '--input': 'oklch(1 0 0 / 15%)',
+                '--ring': 'oklch(0.645 0.246 16.439)',
+                '--chart-1': 'oklch(0.488 0.243 264.376)',
+                '--chart-2': 'oklch(0.696 0.17 162.48)',
+                '--chart-3': 'oklch(0.769 0.188 70.08)',
+                '--chart-4': 'oklch(0.627 0.265 303.9)',
+                '--chart-5': 'oklch(0.645 0.246 16.439)',
+                '--sidebar': 'oklch(0.21 0.006 285.885)',
+                '--sidebar-foreground': 'oklch(0.985 0 0)',
+                '--sidebar-primary': 'oklch(0.645 0.246 16.439)',
+                '--sidebar-primary-foreground': 'oklch(0.969 0.015 12.422)',
+                '--sidebar-accent': 'oklch(0.274 0.006 286.033)',
+                '--sidebar-accent-foreground': 'oklch(0.985 0 0)',
+                '--sidebar-border': 'oklch(1 0 0 / 10%)',
+                '--sidebar-ring': 'oklch(0.645 0.246 16.439)',
+            },
+        },
+        orange: {
+            light: {
+                '--radius': '0.65rem',
+                '--background': 'oklch(1 0 0)',
+                '--foreground': 'oklch(0.141 0.005 285.823)',
+                '--card': 'oklch(1 0 0)',
+                '--card-foreground': 'oklch(0.141 0.005 285.823)',
+                '--popover': 'oklch(1 0 0)',
+                '--popover-foreground': 'oklch(0.141 0.005 285.823)',
+                '--primary': 'oklch(0.705 0.213 47.604)',
+                '--primary-foreground': 'oklch(0.98 0.016 73.684)',
+                '--secondary': 'oklch(0.967 0.001 286.375)',
+                '--secondary-foreground': 'oklch(0.21 0.006 285.885)',
+                '--muted': 'oklch(0.967 0.001 286.375)',
+                '--muted-foreground': 'oklch(0.552 0.016 285.938)',
+                '--accent': 'oklch(0.967 0.001 286.375)',
+                '--accent-foreground': 'oklch(0.21 0.006 285.885)',
+                '--destructive': 'oklch(0.577 0.245 27.325)',
+                '--border': 'oklch(0.92 0.004 286.32)',
+                '--input': 'oklch(0.92 0.004 286.32)',
+                '--ring': 'oklch(0.705 0.213 47.604)',
+                '--chart-1': 'oklch(0.646 0.222 41.116)',
+                '--chart-2': 'oklch(0.6 0.118 184.704)',
+                '--chart-3': 'oklch(0.398 0.07 227.392)',
+                '--chart-4': 'oklch(0.828 0.189 84.429)',
+                '--chart-5': 'oklch(0.769 0.188 70.08)',
+                '--sidebar': 'oklch(0.985 0 0)',
+                '--sidebar-foreground': 'oklch(0.141 0.005 285.823)',
+                '--sidebar-primary': 'oklch(0.705 0.213 47.604)',
+                '--sidebar-primary-foreground': 'oklch(0.98 0.016 73.684)',
+                '--sidebar-accent': 'oklch(0.967 0.001 286.375)',
+                '--sidebar-accent-foreground': 'oklch(0.21 0.006 285.885)',
+                '--sidebar-border': 'oklch(0.92 0.004 286.32)',
+                '--sidebar-ring': 'oklch(0.705 0.213 47.604)',
+            },
+            dark: {
+                '--background': 'oklch(0.141 0.005 285.823)',
+                '--foreground': 'oklch(0.985 0 0)',
+                '--card': 'oklch(0.21 0.006 285.885)',
+                '--card-foreground': 'oklch(0.985 0 0)',
+                '--popover': 'oklch(0.21 0.006 285.885)',
+                '--popover-foreground': 'oklch(0.985 0 0)',
+                '--primary': 'oklch(0.646 0.222 41.116)',
+                '--primary-foreground': 'oklch(0.98 0.016 73.684)',
+                '--secondary': 'oklch(0.274 0.006 286.033)',
+                '--secondary-foreground': 'oklch(0.985 0 0)',
+                '--muted': 'oklch(0.274 0.006 286.033)',
+                '--muted-foreground': 'oklch(0.705 0.015 286.067)',
+                '--accent': 'oklch(0.274 0.006 286.033)',
+                '--accent-foreground': 'oklch(0.985 0 0)',
+                '--destructive': 'oklch(0.704 0.191 22.216)',
+                '--border': 'oklch(1 0 0 / 10%)',
+                '--input': 'oklch(1 0 0 / 15%)',
+                '--ring': 'oklch(0.646 0.222 41.116)',
+                '--chart-1': 'oklch(0.488 0.243 264.376)',
+                '--chart-2': 'oklch(0.696 0.17 162.48)',
+                '--chart-3': 'oklch(0.769 0.188 70.08)',
+                '--chart-4': 'oklch(0.627 0.265 303.9)',
+                '--chart-5': 'oklch(0.645 0.246 16.439)',
+                '--sidebar': 'oklch(0.21 0.006 285.885)',
+                '--sidebar-foreground': 'oklch(0.985 0 0)',
+                '--sidebar-primary': 'oklch(0.646 0.222 41.116)',
+                '--sidebar-primary-foreground': 'oklch(0.98 0.016 73.684)',
+                '--sidebar-accent': 'oklch(0.274 0.006 286.033)',
+                '--sidebar-accent-foreground': 'oklch(0.985 0 0)',
+                '--sidebar-border': 'oklch(1 0 0 / 10%)',
+                '--sidebar-ring': 'oklch(0.646 0.222 41.116)',
+            },
+        },
+        green: {
+            light: {
+                '--radius': '0.65rem',
+                '--background': 'oklch(1 0 0)',
+                '--foreground': 'oklch(0.141 0.005 285.823)',
+                '--card': 'oklch(1 0 0)',
+                '--card-foreground': 'oklch(0.141 0.005 285.823)',
+                '--popover': 'oklch(1 0 0)',
+                '--popover-foreground': 'oklch(0.141 0.005 285.823)',
+                '--primary': 'oklch(0.723 0.219 149.579)',
+                '--primary-foreground': 'oklch(0.982 0.018 155.826)',
+                '--secondary': 'oklch(0.967 0.001 286.375)',
+                '--secondary-foreground': 'oklch(0.21 0.006 285.885)',
+                '--muted': 'oklch(0.967 0.001 286.375)',
+                '--muted-foreground': 'oklch(0.552 0.016 285.938)',
+                '--accent': 'oklch(0.967 0.001 286.375)',
+                '--accent-foreground': 'oklch(0.21 0.006 285.885)',
+                '--destructive': 'oklch(0.577 0.245 27.325)',
+                '--border': 'oklch(0.92 0.004 286.32)',
+                '--input': 'oklch(0.92 0.004 286.32)',
+                '--ring': 'oklch(0.723 0.219 149.579)',
+                '--chart-1': 'oklch(0.646 0.222 41.116)',
+                '--chart-2': 'oklch(0.6 0.118 184.704)',
+                '--chart-3': 'oklch(0.398 0.07 227.392)',
+                '--chart-4': 'oklch(0.828 0.189 84.429)',
+                '--chart-5': 'oklch(0.769 0.188 70.08)',
+                '--sidebar': 'oklch(0.985 0 0)',
+                '--sidebar-foreground': 'oklch(0.141 0.005 285.823)',
+                '--sidebar-primary': 'oklch(0.723 0.219 149.579)',
+                '--sidebar-primary-foreground': 'oklch(0.982 0.018 155.826)',
+                '--sidebar-accent': 'oklch(0.967 0.001 286.375)',
+                '--sidebar-accent-foreground': 'oklch(0.21 0.006 285.885)',
+                '--sidebar-border': 'oklch(0.92 0.004 286.32)',
+                '--sidebar-ring': 'oklch(0.723 0.219 149.579)',
+            },
+            dark: {
+                '--background': 'oklch(0.141 0.005 285.823)',
+                '--foreground': 'oklch(0.985 0 0)',
+                '--card': 'oklch(0.21 0.006 285.885)',
+                '--card-foreground': 'oklch(0.985 0 0)',
+                '--popover': 'oklch(0.21 0.006 285.885)',
+                '--popover-foreground': 'oklch(0.985 0 0)',
+                '--primary': 'oklch(0.696 0.17 162.48)',
+                '--primary-foreground': 'oklch(0.393 0.095 152.535)',
+                '--secondary': 'oklch(0.274 0.006 286.033)',
+                '--secondary-foreground': 'oklch(0.985 0 0)',
+                '--muted': 'oklch(0.274 0.006 286.033)',
+                '--muted-foreground': 'oklch(0.705 0.015 286.067)',
+                '--accent': 'oklch(0.274 0.006 286.033)',
+                '--accent-foreground': 'oklch(0.985 0 0)',
+                '--destructive': 'oklch(0.704 0.191 22.216)',
+                '--border': 'oklch(1 0 0 / 10%)',
+                '--input': 'oklch(1 0 0 / 15%)',
+                '--ring': 'oklch(0.527 0.154 150.069)',
+                '--chart-1': 'oklch(0.488 0.243 264.376)',
+                '--chart-2': 'oklch(0.696 0.17 162.48)',
+                '--chart-3': 'oklch(0.769 0.188 70.08)',
+                '--chart-4': 'oklch(0.627 0.265 303.9)',
+                '--chart-5': 'oklch(0.645 0.246 16.439)',
+                '--sidebar': 'oklch(0.21 0.006 285.885)',
+                '--sidebar-foreground': 'oklch(0.985 0 0)',
+                '--sidebar-primary': 'oklch(0.696 0.17 162.48)',
+                '--sidebar-primary-foreground': 'oklch(0.393 0.095 152.535)',
+                '--sidebar-accent': 'oklch(0.274 0.006 286.033)',
+                '--sidebar-accent-foreground': 'oklch(0.985 0 0)',
+                '--sidebar-border': 'oklch(1 0 0 / 10%)',
+                '--sidebar-ring': 'oklch(0.527 0.154 150.069)',
+            },
+        },
+        blue: {
+            light: {
+                '--radius': '0.65rem',
+                '--background': 'oklch(1 0 0)',
+                '--foreground': 'oklch(0.141 0.005 285.823)',
+                '--card': 'oklch(1 0 0)',
+                '--card-foreground': 'oklch(0.141 0.005 285.823)',
+                '--popover': 'oklch(1 0 0)',
+                '--popover-foreground': 'oklch(0.141 0.005 285.823)',
+                '--primary': 'oklch(0.623 0.214 259.815)',
+                '--primary-foreground': 'oklch(0.97 0.014 254.604)',
+                '--secondary': 'oklch(0.967 0.001 286.375)',
+                '--secondary-foreground': 'oklch(0.21 0.006 285.885)',
+                '--muted': 'oklch(0.967 0.001 286.375)',
+                '--muted-foreground': 'oklch(0.552 0.016 285.938)',
+                '--accent': 'oklch(0.967 0.001 286.375)',
+                '--accent-foreground': 'oklch(0.21 0.006 285.885)',
+                '--destructive': 'oklch(0.577 0.245 27.325)',
+                '--border': 'oklch(0.92 0.004 286.32)',
+                '--input': 'oklch(0.92 0.004 286.32)',
+                '--ring': 'oklch(0.623 0.214 259.815)',
+                '--chart-1': 'oklch(0.646 0.222 41.116)',
+                '--chart-2': 'oklch(0.6 0.118 184.704)',
+                '--chart-3': 'oklch(0.398 0.07 227.392)',
+                '--chart-4': 'oklch(0.828 0.189 84.429)',
+                '--chart-5': 'oklch(0.769 0.188 70.08)',
+                '--sidebar': 'oklch(0.985 0 0)',
+                '--sidebar-foreground': 'oklch(0.141 0.005 285.823)',
+                '--sidebar-primary': 'oklch(0.623 0.214 259.815)',
+                '--sidebar-primary-foreground': 'oklch(0.97 0.014 254.604)',
+                '--sidebar-accent': 'oklch(0.967 0.001 286.375)',
+                '--sidebar-accent-foreground': 'oklch(0.21 0.006 285.885)',
+                '--sidebar-border': 'oklch(0.92 0.004 286.32)',
+                '--sidebar-ring': 'oklch(0.623 0.214 259.815)',
+            },
+            dark: {
+                '--background': 'oklch(0.141 0.005 285.823)',
+                '--foreground': 'oklch(0.985 0 0)',
+                '--card': 'oklch(0.21 0.006 285.885)',
+                '--card-foreground': 'oklch(0.985 0 0)',
+                '--popover': 'oklch(0.21 0.006 285.885)',
+                '--popover-foreground': 'oklch(0.985 0 0)',
+                '--primary': 'oklch(0.546 0.245 262.881)',
+                '--primary-foreground': 'oklch(0.379 0.146 265.522)',
+                '--secondary': 'oklch(0.274 0.006 286.033)',
+                '--secondary-foreground': 'oklch(0.985 0 0)',
+                '--muted': 'oklch(0.274 0.006 286.033)',
+                '--muted-foreground': 'oklch(0.705 0.015 286.067)',
+                '--accent': 'oklch(0.274 0.006 286.033)',
+                '--accent-foreground': 'oklch(0.985 0 0)',
+                '--destructive': 'oklch(0.704 0.191 22.216)',
+                '--border': 'oklch(1 0 0 / 10%)',
+                '--input': 'oklch(1 0 0 / 15%)',
+                '--ring': 'oklch(0.488 0.243 264.376)',
+                '--chart-1': 'oklch(0.488 0.243 264.376)',
+                '--chart-2': 'oklch(0.696 0.17 162.48)',
+                '--chart-3': 'oklch(0.769 0.188 70.08)',
+                '--chart-4': 'oklch(0.627 0.265 303.9)',
+                '--chart-5': 'oklch(0.645 0.246 16.439)',
+                '--sidebar': 'oklch(0.21 0.006 285.885)',
+                '--sidebar-foreground': 'oklch(0.985 0 0)',
+                '--sidebar-primary': 'oklch(0.546 0.245 262.881)',
+                '--sidebar-primary-foreground': 'oklch(0.379 0.146 265.522)',
+                '--sidebar-accent': 'oklch(0.274 0.006 286.033)',
+                '--sidebar-accent-foreground': 'oklch(0.985 0 0)',
+                '--sidebar-border': 'oklch(1 0 0 / 10%)',
+                '--sidebar-ring': 'oklch(0.488 0.243 264.376)',
+            },
+        },
+        yellow: {
+            light: {
+                '--radius': '0.65rem',
+                '--background': 'oklch(1 0 0)',
+                '--foreground': 'oklch(0.141 0.005 285.823)',
+                '--card': 'oklch(1 0 0)',
+                '--card-foreground': 'oklch(0.141 0.005 285.823)',
+                '--popover': 'oklch(1 0 0)',
+                '--popover-foreground': 'oklch(0.141 0.005 285.823)',
+                '--primary': 'oklch(0.795 0.184 86.047)',
+                '--primary-foreground': 'oklch(0.421 0.095 57.708)',
+                '--secondary': 'oklch(0.967 0.001 286.375)',
+                '--secondary-foreground': 'oklch(0.21 0.006 285.885)',
+                '--muted': 'oklch(0.967 0.001 286.375)',
+                '--muted-foreground': 'oklch(0.552 0.016 285.938)',
+                '--accent': 'oklch(0.967 0.001 286.375)',
+                '--accent-foreground': 'oklch(0.21 0.006 285.885)',
+                '--destructive': 'oklch(0.577 0.245 27.325)',
+                '--border': 'oklch(0.92 0.004 286.32)',
+                '--input': 'oklch(0.92 0.004 286.32)',
+                '--ring': 'oklch(0.795 0.184 86.047)',
+                '--chart-1': 'oklch(0.646 0.222 41.116)',
+                '--chart-2': 'oklch(0.6 0.118 184.704)',
+                '--chart-3': 'oklch(0.398 0.07 227.392)',
+                '--chart-4': 'oklch(0.828 0.189 84.429)',
+                '--chart-5': 'oklch(0.769 0.188 70.08)',
+                '--sidebar': 'oklch(0.985 0 0)',
+                '--sidebar-foreground': 'oklch(0.141 0.005 285.823)',
+                '--sidebar-primary': 'oklch(0.795 0.184 86.047)',
+                '--sidebar-primary-foreground': 'oklch(0.421 0.095 57.708)',
+                '--sidebar-accent': 'oklch(0.967 0.001 286.375)',
+                '--sidebar-accent-foreground': 'oklch(0.21 0.006 285.885)',
+                '--sidebar-border': 'oklch(0.92 0.004 286.32)',
+                '--sidebar-ring': 'oklch(0.795 0.184 86.047)',
+            },
+            dark: {
+                '--background': 'oklch(0.141 0.005 285.823)',
+                '--foreground': 'oklch(0.985 0 0)',
+                '--card': 'oklch(0.21 0.006 285.885)',
+                '--card-foreground': 'oklch(0.985 0 0)',
+                '--popover': 'oklch(0.21 0.006 285.885)',
+                '--popover-foreground': 'oklch(0.985 0 0)',
+                '--primary': 'oklch(0.795 0.184 86.047)',
+                '--primary-foreground': 'oklch(0.421 0.095 57.708)',
+                '--secondary': 'oklch(0.274 0.006 286.033)',
+                '--secondary-foreground': 'oklch(0.985 0 0)',
+                '--muted': 'oklch(0.274 0.006 286.033)',
+                '--muted-foreground': 'oklch(0.705 0.015 286.067)',
+                '--accent': 'oklch(0.274 0.006 286.033)',
+                '--accent-foreground': 'oklch(0.985 0 0)',
+                '--destructive': 'oklch(0.704 0.191 22.216)',
+                '--border': 'oklch(1 0 0 / 10%)',
+                '--input': 'oklch(1 0 0 / 15%)',
+                '--ring': 'oklch(0.554 0.135 66.442)',
+                '--chart-1': 'oklch(0.488 0.243 264.376)',
+                '--chart-2': 'oklch(0.696 0.17 162.48)',
+                '--chart-3': 'oklch(0.769 0.188 70.08)',
+                '--chart-4': 'oklch(0.627 0.265 303.9)',
+                '--chart-5': 'oklch(0.645 0.246 16.439)',
+                '--sidebar': 'oklch(0.21 0.006 285.885)',
+                '--sidebar-foreground': 'oklch(0.985 0 0)',
+                '--sidebar-primary': 'oklch(0.795 0.184 86.047)',
+                '--sidebar-primary-foreground': 'oklch(0.421 0.095 57.708)',
+                '--sidebar-accent': 'oklch(0.274 0.006 286.033)',
+                '--sidebar-accent-foreground': 'oklch(0.985 0 0)',
+                '--sidebar-border': 'oklch(1 0 0 / 10%)',
+                '--sidebar-ring': 'oklch(0.554 0.135 66.442)',
+            },
+        },
+        violet: {
+            light: {
+                '--radius': '0.65rem',
+                '--background': 'oklch(1 0 0)',
+                '--foreground': 'oklch(0.141 0.005 285.823)',
+                '--card': 'oklch(1 0 0)',
+                '--card-foreground': 'oklch(0.141 0.005 285.823)',
+                '--popover': 'oklch(1 0 0)',
+                '--popover-foreground': 'oklch(0.141 0.005 285.823)',
+                '--primary': 'oklch(0.606 0.25 292.717)',
+                '--primary-foreground': 'oklch(0.969 0.016 293.756)',
+                '--secondary': 'oklch(0.967 0.001 286.375)',
+                '--secondary-foreground': 'oklch(0.21 0.006 285.885)',
+                '--muted': 'oklch(0.967 0.001 286.375)',
+                '--muted-foreground': 'oklch(0.552 0.016 285.938)',
+                '--accent': 'oklch(0.967 0.001 286.375)',
+                '--accent-foreground': 'oklch(0.21 0.006 285.885)',
+                '--destructive': 'oklch(0.577 0.245 27.325)',
+                '--border': 'oklch(0.92 0.004 286.32)',
+                '--input': 'oklch(0.92 0.004 286.32)',
+                '--ring': 'oklch(0.606 0.25 292.717)',
+                '--chart-1': 'oklch(0.646 0.222 41.116)',
+                '--chart-2': 'oklch(0.6 0.118 184.704)',
+                '--chart-3': 'oklch(0.398 0.07 227.392)',
+                '--chart-4': 'oklch(0.828 0.189 84.429)',
+                '--chart-5': 'oklch(0.769 0.188 70.08)',
+                '--sidebar': 'oklch(0.985 0 0)',
+                '--sidebar-foreground': 'oklch(0.141 0.005 285.823)',
+                '--sidebar-primary': 'oklch(0.606 0.25 292.717)',
+                '--sidebar-primary-foreground': 'oklch(0.969 0.016 293.756)',
+                '--sidebar-accent': 'oklch(0.967 0.001 286.375)',
+                '--sidebar-accent-foreground': 'oklch(0.21 0.006 285.885)',
+                '--sidebar-border': 'oklch(0.92 0.004 286.32)',
+                '--sidebar-ring': 'oklch(0.606 0.25 292.717)',
+            },
+            dark: {
+                '--background': 'oklch(0.141 0.005 285.823)',
+                '--foreground': 'oklch(0.985 0 0)',
+                '--card': 'oklch(0.21 0.006 285.885)',
+                '--card-foreground': 'oklch(0.985 0 0)',
+                '--popover': 'oklch(0.21 0.006 285.885)',
+                '--popover-foreground': 'oklch(0.985 0 0)',
+                '--primary': 'oklch(0.541 0.281 293.009)',
+                '--primary-foreground': 'oklch(0.969 0.016 293.756)',
+                '--secondary': 'oklch(0.274 0.006 286.033)',
+                '--secondary-foreground': 'oklch(0.985 0 0)',
+                '--muted': 'oklch(0.274 0.006 286.033)',
+                '--muted-foreground': 'oklch(0.705 0.015 286.067)',
+                '--accent': 'oklch(0.274 0.006 286.033)',
+                '--accent-foreground': 'oklch(0.985 0 0)',
+                '--destructive': 'oklch(0.704 0.191 22.216)',
+                '--border': 'oklch(1 0 0 / 10%)',
+                '--input': 'oklch(1 0 0 / 15%)',
+                '--ring': 'oklch(0.541 0.281 293.009)',
+                '--chart-1': 'oklch(0.488 0.243 264.376)',
+                '--chart-2': 'oklch(0.696 0.17 162.48)',
+                '--chart-3': 'oklch(0.769 0.188 70.08)',
+                '--chart-4': 'oklch(0.627 0.265 303.9)',
+                '--chart-5': 'oklch(0.645 0.246 16.439)',
+                '--sidebar': 'oklch(0.21 0.006 285.885)',
+                '--sidebar-foreground': 'oklch(0.985 0 0)',
+                '--sidebar-primary': 'oklch(0.541 0.281 293.009)',
+                '--sidebar-primary-foreground': 'oklch(0.969 0.016 293.756)',
+                '--sidebar-accent': 'oklch(0.274 0.006 286.033)',
+                '--sidebar-accent-foreground': 'oklch(0.985 0 0)',
+                '--sidebar-border': 'oklch(1 0 0 / 10%)',
+                '--sidebar-ring': 'oklch(0.541 0.281 293.009)',
+            },
+        },
+    };
+    type ThemeKey = keyof typeof colorThemes;
+
+    const [theme, setTheme] = useState('black');
+
+    const applyTheme = (themeKey: string) => {
+        setTheme(themeKey);
+        const theme = colorThemes[themeKey as ThemeKey];
+        if (!theme) return;
+        const url = new URL(window.location.href);
+        url.searchParams.set('theme', themeKey);
+        window.history.replaceState({}, '', url.toString());
+        if (theme.light) {
+            Object.entries(theme.dark).forEach(([key, value]) => {
+                document.documentElement.style.setProperty(String(key), String(value));
+            });
+        }
+        const darkRoot = document.querySelector('.dark');
+        if (theme.dark && darkRoot) {
+            Object.entries(theme.dark).forEach(([key, value]) => {
+                (darkRoot as HTMLElement).style.setProperty(String(key), String(value));
+            });
+        }
+    };
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const urlTheme = params.get('theme');
+        if (urlTheme && colorThemes[urlTheme]) {
+            applyTheme(urlTheme);
+        }
+    }, []);
+
     return (
         <header id={'header'} className="sticky top-0 z-50 h-0 w-auto">
             <div
                 className={`supports-[backdrop-filter]:bg-background/60 border-b-primary sticky z-50 container mx-4 mt-4 flex h-16 w-auto items-center justify-between rounded-2xl px-3 backdrop-blur`}
             >
                 <div className="flex items-center gap-4">
-                    <ModeToggle />
-                    <Link to="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
+                    <Select value={theme} onValueChange={(value: string) => applyTheme(value)}>
+                        <SelectTrigger className={`bg-primary-foreground`}>
+                            <LucidePalette />
+                            {theme.charAt(0).toUpperCase() + theme.slice(1)}
+                        </SelectTrigger>
+                        <SelectContent>
+                            {Object.keys(colorThemes).map((key) => (
+                                <SelectItem key={key} value={key}>
+                                    <LucidePalette /> {key.charAt(0).toUpperCase() + key.slice(1)}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    <Link to="/Wordle" className="flex items-center gap-2 transition-opacity hover:opacity-80">
                         <h1 className="text-2xl font-bold">Wordle Solutions</h1>
                     </Link>
                 </div>
@@ -60,7 +667,7 @@ export function Header() {
                         <NavigationMenuItem>
                             <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
                                 <Link
-                                    to="/"
+                                    to="/Wordle"
                                     className="flex items-center gap-2"
                                     onClick={(e) => {
                                         e.preventDefault();
@@ -79,7 +686,7 @@ export function Header() {
                                 <Link to="https://github.com/An0n-00/Wordle" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
                                     <div className={'flex items-center gap-2'}>
                                         <span>GitHub</span>
-                                        <img src="/src/assets/logo.svg" alt="GitHub" width={24} height={24} />
+                                        <Github className="h-4 w-4" />
                                     </div>
                                 </Link>
                             </NavigationMenuLink>
@@ -98,7 +705,7 @@ export function Header() {
                     <SheetContent side="right" className="flex flex-col">
                         <div className="flex flex-col space-y-4 py-4">
                             <Link
-                                to="/"
+                                to="/Wordle"
                                 className="hover:bg-muted flex items-center gap-2 rounded-md px-4 py-2"
                                 onClick={(e) => {
                                     e.preventDefault();
@@ -115,7 +722,7 @@ export function Header() {
                                 className="hover:bg-muted flex items-center gap-2 rounded-md px-4 py-2"
                                 onClick={() => setMobileMenuOpen(false)}
                             >
-                                <img src="/src/assets/logo.svg" alt="GitHub" width={24} height={24} />
+                                <Github className="h-4 w-4" />
                                 <span>GitHub</span>
                             </Link>
                         </div>
@@ -125,9 +732,6 @@ export function Header() {
         </header>
     );
 }
-
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { toast } from 'sonner';
 
 type WordleData = {
     id: number;
@@ -156,6 +760,18 @@ export function Today() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    // check if ?date=YYYY-MM-DD is present in the url and if it is a valid date
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const urlDate = params.get('date');
+        if (urlDate) {
+            const d = new Date(urlDate);
+            if (!isNaN(d.getTime())) {
+                setDate(d);
+            }
+        }
+    }, []);
+
     useEffect(() => {
         setLoading(true);
         setError(null);
@@ -163,9 +779,16 @@ export function Today() {
         const url = `https://api.allorigins.win/raw?url=https://www.nytimes.com/svc/wordle/v2/${formatDate(date)}.json`;
         fetch(url)
             .then(async (res) => {
-                if (!res.ok) throw new Error('No data for this date.');
+                if (!res.ok) {
+                    toast.error('Error fetching data: No data for this date.');
+                    throw new Error('No data for this date.');
+                }
                 const data = await res.json();
                 toast.success('Data fetched successfully!');
+                // add ?date=YYYY-MM-DD to the url without reloading the page
+                const url = new URL(window.location.href);
+                url.searchParams.set('date', formatDate(date));
+                window.history.replaceState({}, '', url.toString());
                 return data;
             })
             .then(setData)
@@ -238,14 +861,6 @@ export function Today() {
                                 </Button>
                             </>
                         )}
-                        {!loading && !error && !data && (
-                            <>
-                                <span className="text-destructive font-semibold">You are too far in the future! Please go back to today.</span>
-                                <Button onClick={() => setDate(new Date())} className="mt-4 w-full text-sm">
-                                    Go to Today
-                                </Button>
-                            </>
-                        )}
                         {data && !error && !loading && typeof data.solution === 'string' && data.solution && (
                             <>
                                 <span
@@ -256,13 +871,13 @@ export function Today() {
                                         toast.success('Copied to clipboard!');
                                     }}
                                 >
-                                    <span className="inline-block">{typeof data.solution === 'string' ? data.solution.toUpperCase() : ''}</span>
+                                    <span className="dark:text-secondary-foreground inline-block">{typeof data.solution === 'string' ? data.solution.toUpperCase() : ''}</span>
                                 </span>
                                 <Button onClick={() => setDate(new Date())} className="mt-4 w-full text-sm">
                                     Today
                                 </Button>
                                 <div className="flex w-full gap-2">
-                                    <Button variant="outline" onClick={() => goTo(-7)} className="flex-1 text-sm">
+                                    <Button variant="outline" onClick={() => goTo(-7)} className="hidden flex-1 text-sm sm:flex">
                                         <LucideChevronsLeft />
                                         -1w
                                     </Button>
@@ -274,18 +889,18 @@ export function Today() {
                                         Tomorrow
                                         <ArrowRight />
                                     </Button>
-                                    <Button variant="outline" onClick={() => goTo(7)} className="flex-1 text-sm">
+                                    <Button variant="outline" onClick={() => goTo(7)} className="hidden flex-1 text-sm sm:flex">
                                         +1w
                                         <LucideChevronsRight />
                                     </Button>
-                                </div>
-                                <div className="mt-6 flex w-full justify-center">
-                                    <Calendar mode="single" selected={date} onSelect={(d) => d && setDate(d)} className="bg-background rounded-md border" />
                                 </div>
                             </>
                         )}
                     </CardContent>
                 </Card>
+                <div className="mt-6 flex w-full justify-center">
+                    <Calendar mode="single" selected={date} onSelect={(d) => d && setDate(d)} className="bg-background rounded-md border" />
+                </div>
             </div>
             <div className="pointer-events-none absolute inset-0 overflow-hidden">
                 <div className="absolute top-0 left-0 h-full w-full">

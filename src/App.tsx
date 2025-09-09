@@ -7,7 +7,7 @@ import { ThemeProvider } from '@/components/ui/theme-provider';
 export default function App() {
     return (
         <>
-            <ThemeProvider>
+            <ThemeProvider defaultTheme="dark">
                 <BrowserRouter>
                     <Routes>
                         {/* Main */}
@@ -17,7 +17,7 @@ export default function App() {
                         <Route path="*" element={<NotFound />} />
                     </Routes>
                 </BrowserRouter>
-                <Toaster closeButton richColors visibleToasts={5} />
+                <Toaster closeButton visibleToasts={5} />
             </ThemeProvider>
         </>
     );
