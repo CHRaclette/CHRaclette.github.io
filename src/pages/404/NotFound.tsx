@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const WordSearch = () => {
     const highlightIndices = [12, 13, 14, 26, 27, 28, 29, 33, 34, 35, 49, 50, 51, 52, 53];
