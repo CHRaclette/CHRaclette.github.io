@@ -1,34 +1,41 @@
 import { useEffect, useState } from 'react';
 
-const [theme, setTheme] = useState('black');
+const MyComponent = () => {
+    const [, setTheme] = useState('black'); // ✅ moved inside component
 
-const applyTheme = (themeKey: string) => {
-    setTheme(themeKey);
-    const theme = colorThemes[themeKey as ThemeKey];
-    if (!theme) return;
-    const url = new URL(window.location.href);
-    url.searchParams.set('theme', themeKey);
-    window.history.replaceState({}, '', url.toString());
-    if (theme.light) {
-        Object.entries(theme.dark).forEach(([key, value]) => {
-            document.documentElement.style.setProperty(String(key), String(value));
-        });
-    }
-    const darkRoot = document.querySelector('.dark');
-    if (theme.dark && darkRoot) {
-        Object.entries(theme.dark).forEach(([key, value]) => {
-            (darkRoot as HTMLElement).style.setProperty(String(key), String(value));
-        });
-    }
+    const applyTheme = (themeKey: string) => {
+        setTheme(themeKey);
+        const theme = colorThemes[themeKey as ThemeKey];
+        if (!theme) return;
+        const url = new URL(window.location.href);
+        url.searchParams.set('theme', themeKey);
+        window.history.replaceState({}, '', url.toString());
+        if (theme.light) {
+            Object.entries(theme.dark).forEach(([key, value]) => {
+                document.documentElement.style.setProperty(String(key), String(value));
+            });
+        }
+        const darkRoot = document.querySelector('.dark');
+        if (theme.dark && darkRoot) {
+            Object.entries(theme.dark).forEach(([key, value]) => {
+                (darkRoot as HTMLElement).style.setProperty(String(key), String(value));
+            });
+        }
+    };
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const urlTheme = params.get('theme');
+        if (urlTheme && colorThemes[urlTheme]) {
+            applyTheme(urlTheme);
+        }
+    }, []);
+
+    return <div>My Component</div>;
 };
 
-useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const urlTheme = params.get('theme');
-    if (urlTheme && colorThemes[urlTheme]) {
-        applyTheme(urlTheme);
-    }
-}, []);
+export default MyComponent;
+
 
 interface ColorThemes {
     [key: string]: {
