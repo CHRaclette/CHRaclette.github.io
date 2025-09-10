@@ -1,40 +1,61 @@
-import { Button } from '@/components/ui/button.tsx';
-import { Bug, HomeIcon } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 
-export default function NotFound() {
+const WordSearch = () => {
+    const highlightIndices = [12, 13, 14, 26, 27, 28, 29, 33, 34, 35, 49, 50, 51, 52, 53];
+    const [selectedLetters, setSelectedLetters] = useState<number[]>([]);
+
+    useEffect(() => {
+        let delay = 1500;
+        highlightIndices.forEach((index) => {
+            setTimeout(() => {
+                setSelectedLetters((prev) => [...prev, index]);
+            }, delay);
+            delay += 500;
+        });
+    }, []);
+
+    const letters = [
+        'k', 'v', 'n', 'z', 'i', 'x', 'm', 'e', 't', 'a', 'x', 'l',
+        '4','0','4','y','y','w','v','b','o','q','d','y','p','a','p','a','g','e',
+        'v','j','a','n','o','t','s','c','e','w','v','x','e','p','c','f','h','q',
+        'e','f','o','u','n','d','s','w','q','v','o','s','m','v','f','u'
+    ];
+
     return (
-        <>
-            <div className="flex min-h-[88vh] w-full flex-1 flex-col items-center justify-center gap-6 p-4 text-center">
-                <h1 className="text-4xl font-bold">404 - Not Found</h1>
-                <p className="text-lg">The page you are looking for does not exist or has moved.</p>
-                <div className={'mt-2 flex flex-col items-center justify-center gap-2'}>
-                    <Button size="lg" asChild>
-                        <Link to="/Wordle" className="mt-4">
-                            Back Home
-                            <HomeIcon />
-                        </Link>
-                    </Button>
-                    <Button size="lg" variant={'ghost'} asChild>
-                        <Link to="https://github.com/An0n-00/IT-Ticket/issues" target={'_blank'} className="mt-4">
-                            Report an issue
-                            <Bug />
-                        </Link>
-                    </Button>
-                </div>
-                <div className="pointer-events-none absolute inset-0 overflow-hidden">
-                    <div className="absolute top-0 left-0 h-full w-full animate-pulse" style={{ animationDuration: '5s' }}>
-                        <div className="bg-primary/60 absolute -top-48 -left-48 h-[40vw] max-h-[600px] min-h-[300px] w-[40vw] max-w-[600px] min-w-[300px] rounded-full blur-[128px]"></div>
-                        <div className="bg-primary/20 absolute -top-32 -left-32 h-[30vw] max-h-[400px] min-h-[200px] w-[30vw] max-w-[400px] min-w-[200px] rounded-full blur-[96px]"></div>
-                        <div className="bg-primary/10 absolute -top-16 -left-16 h-[20vw] max-h-[200px] min-h-[100px] w-[20vw] max-w-[200px] min-w-[100px] rounded-full blur-[64px]"></div>
-                    </div>
-                    <div className="absolute right-0 bottom-0 h-full w-full animate-pulse" style={{ animationDuration: '8s' }}>
-                        <div className="bg-primary/60 absolute -right-48 -bottom-48 h-[40vw] max-h-[600px] min-h-[300px] w-[40vw] max-w-[600px] min-w-[300px] rounded-full blur-[128px]"></div>
-                        <div className="bg-primary/20 absolute -right-32 -bottom-32 h-[30vw] max-h-[400px] min-h-[200px] w-[30vw] max-w-[400px] min-w-[200px] rounded-full blur-[96px]"></div>
-                        <div className="bg-primary/10 absolute -right-16 -bottom-16 h-[20vw] max-h-[200px] min-h-[100px] w-[20vw] max-w-[200px] min-w-[100px] rounded-full blur-[64px]"></div>
-                    </div>
-                </div>
-            </div>
-        </>
+        <div className="w-full md:w-1/2">
+            <ul className="flex flex-wrap gap-1">
+                {letters.map((letter, index) => {
+                    const isSelected = selectedLetters.includes(index);
+                    return (
+                        <li
+                            key={index}
+                            className={`w-[12%] aspect-square flex items-center justify-center  text-opacity-70 uppercase font-light text-[1.6vw]
+                                        transition-all duration-500 ease-in-out
+                ${isSelected ? 'bg-primary   ' : 'bg-black bg-opacity-20'}
+              `}
+                        >
+                            {letter}
+                        </li>
+                    );
+                })}
+            </ul>
+        </div>
     );
-}
+};
+
+const NotFoundPage = () => {
+    return (
+        <div className="flex flex-row gap-4 w-11/12 max-w-[1600px] mx-auto mt-20 md:mt-32  font-sans">
+            <WordSearch />
+            <div className="w-full md:w-1/2 space-y-6 m-6 text-base md:text-lg leading-7">
+                <h1 className="text-3xl md:text-5xl font-normal">Oops! Page not found.</h1>
+                <p>We're sorry, but the page you are looking for doesn't seem to exist. It may have been moved, is temporarily unavailable, or no longer exists.</p>
+                <p>Please check the URL for any typos, try using our search function, or head back to our homepage to explore other content.</p>
+            </div>
+
+
+        </div>
+    );
+};
+
+export default NotFoundPage;
