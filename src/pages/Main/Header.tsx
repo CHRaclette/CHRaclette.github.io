@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
 import { LucideMenu, Home, LucidePalette, Github } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Button } from 'react-day-picker';
+import { Button } from "@/components/ui/button";
 
 
 export function Header() {
@@ -615,7 +615,7 @@ export function Header() {
         }
     }, []);
 
-    // @ts-ignore
+
     return (
         <header id={'header'} className="sticky top-0 z-50 h-0 w-auto">
             <div
@@ -675,10 +675,11 @@ export function Header() {
                 {/* Mobile Menu */}
                 <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                     <SheetTrigger asChild>
-                        <Button variant="ghost" size="icon" className="md:hidden">
+                        <Button variant = "ghost" size="sm" className="md:hidden">
                             <LucideMenu />
                             <span className="sr-only">Toggle menu</span>
                         </Button>
+
                     </SheetTrigger>
                     <SheetContent side="right" className="flex flex-col">
                         <div className="flex flex-col space-y-4 py-4">
